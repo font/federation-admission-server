@@ -22,6 +22,7 @@ import (
 	"time"
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/apimachinery/registered"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
@@ -41,13 +42,13 @@ type GenericWebhook struct {
 }
 
 // NewGenericWebhook creates a new GenericWebhook from the provided kubeconfig file.
-func NewGenericWebhook(scheme *runtime.Scheme, codecFactory serializer.CodecFactory, kubeConfigFile string, groupVersions []schema.GroupVersion, initialBackoff time.Duration) (*GenericWebhook, error) {
-	return newGenericWebhook(scheme, codecFactory, kubeConfigFile, groupVersions, initialBackoff, defaultRequestTimeout)
+func NewGenericWebhook(registry *registered.APIRegistrationManager, codecFactory serializer.CodecFactory, kubeConfigFile string, groupVersions []schema.GroupVersion, initialBackoff time.Duration) (*GenericWebhook, error) {
+	return newGenericWebhook(registry, codecFactory, kubeConfigFile, groupVersions, initialBackoff, defaultRequestTimeout)
 }
 
-func newGenericWebhook(scheme *runtime.Scheme, codecFactory serializer.CodecFactory, kubeConfigFile string, groupVersions []schema.GroupVersion, initialBackoff, requestTimeout time.Duration) (*GenericWebhook, error) {
+func newGenericWebhook(registry *registered.APIRegistrationManager, codecFactory serializer.CodecFactory, kubeConfigFile string, groupVersions []schema.GroupVersion, initialBackoff, requestTimeout time.Duration) (*GenericWebhook, error) {
 	for _, groupVersion := range groupVersions {
-		if !scheme.IsVersionRegistered(groupVersion) {
+		if !registry.IsEnabledVersion(groupVersion) {
 			return nil, fmt.Errorf("webhook plugin requires enabling extension resource: %s", groupVersion)
 		}
 	}

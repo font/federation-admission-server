@@ -17,7 +17,6 @@ limitations under the License.
 package rest
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -27,6 +26,7 @@ import (
 	metav1beta1 "k8s.io/apimachinery/pkg/apis/meta/v1beta1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	genericapirequest "k8s.io/apiserver/pkg/endpoints/request"
 )
 
 type defaultTableConvertor struct {
@@ -40,7 +40,7 @@ func NewDefaultTableConvertor(resource schema.GroupResource) TableConvertor {
 
 var swaggerMetadataDescriptions = metav1.ObjectMeta{}.SwaggerDoc()
 
-func (c defaultTableConvertor) ConvertToTable(ctx context.Context, object runtime.Object, tableOptions runtime.Object) (*metav1beta1.Table, error) {
+func (c defaultTableConvertor) ConvertToTable(ctx genericapirequest.Context, object runtime.Object, tableOptions runtime.Object) (*metav1beta1.Table, error) {
 	var table metav1beta1.Table
 	fn := func(obj runtime.Object) error {
 		m, err := meta.Accessor(obj)

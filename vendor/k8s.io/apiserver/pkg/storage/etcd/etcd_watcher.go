@@ -17,7 +17,6 @@ limitations under the License.
 package etcd
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -33,6 +32,7 @@ import (
 
 	etcd "github.com/coreos/etcd/client"
 	"github.com/golang/glog"
+	"golang.org/x/net/context"
 )
 
 // Etcd watch event actions

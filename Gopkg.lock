@@ -232,14 +232,14 @@
   version = "1.0.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/openshift/generic-admission-server"
   packages = [
     "pkg/apiserver",
     "pkg/cmd/server",
     "pkg/registry/admissionreview"
   ]
-  revision = "0d37a6c7bb2c96d2363c0fd934d2e7cdb7d90ebc"
-  version = "v1.9.0"
+  revision = "76d182e57ce628bbf6eb266a7d26cf6c52adf551"
 
 [[projects]]
   name = "github.com/pborman/uuid"
@@ -459,6 +459,8 @@
     "pkg/api/validation",
     "pkg/api/validation/path",
     "pkg/apimachinery",
+    "pkg/apimachinery/announced",
+    "pkg/apimachinery/registered",
     "pkg/apis/meta/internalversion",
     "pkg/apis/meta/v1",
     "pkg/apis/meta/v1/unstructured",
@@ -505,7 +507,7 @@
   revision = "17529ec7eadb8de8e7dc835201455f53571f655a"
 
 [[projects]]
-  branch = "master"
+  branch = "release-1.10"
   name = "k8s.io/apiserver"
   packages = [
     "pkg/admission",
@@ -518,12 +520,12 @@
     "pkg/admission/plugin/webhook/config/apis/webhookadmission",
     "pkg/admission/plugin/webhook/config/apis/webhookadmission/v1alpha1",
     "pkg/admission/plugin/webhook/errors",
-    "pkg/admission/plugin/webhook/generic",
     "pkg/admission/plugin/webhook/mutating",
     "pkg/admission/plugin/webhook/namespace",
     "pkg/admission/plugin/webhook/request",
     "pkg/admission/plugin/webhook/rules",
     "pkg/admission/plugin/webhook/validating",
+    "pkg/admission/plugin/webhook/versioned",
     "pkg/apis/apiserver",
     "pkg/apis/apiserver/install",
     "pkg/apis/apiserver/v1alpha1",
@@ -587,7 +589,6 @@
     "pkg/util/flag",
     "pkg/util/flushwriter",
     "pkg/util/logs",
-    "pkg/util/openapi",
     "pkg/util/trace",
     "pkg/util/webhook",
     "pkg/util/wsstream",
@@ -598,9 +599,10 @@
     "plugin/pkg/authenticator/token/webhook",
     "plugin/pkg/authorizer/webhook"
   ]
-  revision = "0553b9748924ffb5737340cb0afa6f0de2b12c42"
+  revision = "8378ef881d4fa7d3ca5c5e7e5309592ec69b11e4"
 
 [[projects]]
+  branch = "release-7.0"
   name = "k8s.io/client-go"
   packages = [
     "discovery",
@@ -721,8 +723,7 @@
     "util/integer",
     "util/retry"
   ]
-  revision = "23781f4d6632d88e869066eaebb743857aa1ef9b"
-  version = "v7.0.0"
+  revision = "26a26f55b28aa1b338fbaf6fbbe0bcd76aed05e0"
 
 [[projects]]
   branch = "master"
@@ -739,6 +740,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ece07a3090e15f4235ad31032316a72d0733aaf84c318e6f951973e46b1564e3"
+  inputs-digest = "0a2c530a73df35ed6a4493c542830d09a82d0ebc0c753cb6ae4e8ceab0efbc89"
   solver-name = "gps-cdcl"
   solver-version = 1

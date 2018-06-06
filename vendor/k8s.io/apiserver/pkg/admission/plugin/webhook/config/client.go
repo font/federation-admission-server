@@ -17,7 +17,6 @@ limitations under the License.
 package config
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -51,7 +50,7 @@ type ClientManager struct {
 	cache                *lru.Cache
 }
 
-// NewClientManager creates a clientManager.
+// NewClientManager creates a ClientManager.
 func NewClientManager() (ClientManager, error) {
 	cache, err := lru.New(defaultCacheSize)
 	if err != nil {
@@ -91,13 +90,13 @@ func (cm *ClientManager) SetServiceResolver(sr ServiceResolver) {
 func (cm *ClientManager) Validate() error {
 	var errs []error
 	if cm.negotiatedSerializer == nil {
-		errs = append(errs, fmt.Errorf("the clientManager requires a negotiatedSerializer"))
+		errs = append(errs, fmt.Errorf("the ClientManager requires a negotiatedSerializer"))
 	}
 	if cm.serviceResolver == nil {
-		errs = append(errs, fmt.Errorf("the clientManager requires a serviceResolver"))
+		errs = append(errs, fmt.Errorf("the ClientManager requires a serviceResolver"))
 	}
 	if cm.authInfoResolver == nil {
-		errs = append(errs, fmt.Errorf("the clientManager requires an authInfoResolver"))
+		errs = append(errs, fmt.Errorf("the ClientManager requires an authInfoResolver"))
 	}
 	return utilerrors.NewAggregate(errs)
 }
@@ -148,10 +147,9 @@ func (cm *ClientManager) HookClient(h *v1beta1.Webhook) (*rest.RESTClient, error
 
 		delegateDialer := cfg.Dial
 		if delegateDialer == nil {
-			var d net.Dialer
-			delegateDialer = d.DialContext
+			delegateDialer = net.Dial
 		}
-		cfg.Dial = func(ctx context.Context, network, addr string) (net.Conn, error) {
+		cfg.Dial = func(network, addr string) (net.Conn, error) {
 			if addr == host {
 				u, err := cm.serviceResolver.ResolveEndpoint(svc.Namespace, svc.Name)
 				if err != nil {
@@ -159,7 +157,7 @@ func (cm *ClientManager) HookClient(h *v1beta1.Webhook) (*rest.RESTClient, error
 				}
 				addr = u.Host
 			}
-			return delegateDialer(ctx, network, addr)
+			return delegateDialer(network, addr)
 		}
 
 		return complete(cfg)

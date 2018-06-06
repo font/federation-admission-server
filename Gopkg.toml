@@ -31,19 +31,19 @@
 
 [[constraint]]
   name = "github.com/openshift/generic-admission-server"
-  version = "1.9.0"
+  branch = "release-1.10"
 
 [[constraint]]
   branch = "release-1.10"
   name = "k8s.io/apimachinery"
 
 [[constraint]]
-  branch = "master"
+  branch = "release-1.10"
   name = "k8s.io/apiserver"
 
 [[constraint]]
+  branch = "release-7.0"
   name = "k8s.io/client-go"
-  version = "7.0.0"
 
 [prune]
   go-tests = true

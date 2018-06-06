@@ -17,7 +17,6 @@ limitations under the License.
 package storage
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -25,6 +24,7 @@ import (
 	"time"
 
 	"github.com/golang/glog"
+	"golang.org/x/net/context"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"

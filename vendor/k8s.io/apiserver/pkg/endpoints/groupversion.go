@@ -22,15 +22,15 @@ import (
 
 	"github.com/emicklei/go-restful"
 
+	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
-	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apiserver/pkg/admission"
 	"k8s.io/apiserver/pkg/endpoints/discovery"
+	"k8s.io/apiserver/pkg/endpoints/request"
 	"k8s.io/apiserver/pkg/registry/rest"
-	openapicommon "k8s.io/kube-openapi/pkg/common"
 )
 
 // APIGroupVersion is a helper for exposing rest.Storage objects as http.Handlers via go-restful
@@ -56,8 +56,7 @@ type APIGroupVersion struct {
 	// version (for when the inevitable meta/v2 group emerges).
 	MetaGroupVersion *schema.GroupVersion
 
-	// RootScopedKinds are the root scoped kinds for the primary GroupVersion
-	RootScopedKinds sets.String
+	Mapper meta.RESTMapper
 
 	// Serializer is used to determine how to convert responses from API methods into bytes to send over
 	// the wire.
@@ -71,16 +70,14 @@ type APIGroupVersion struct {
 	Linker          runtime.SelfLinker
 	UnsafeConvertor runtime.ObjectConvertor
 
-	Admit admission.Interface
+	Admit   admission.Interface
+	Context request.RequestContextMapper
 
 	MinRequestTimeout time.Duration
 
 	// EnableAPIResponseCompression indicates whether API Responses should support compression
 	// if the client requests it via Accept-Encoding
 	EnableAPIResponseCompression bool
-
-	// OpenAPIConfig lets the individual handlers build a subset of the OpenAPI schema before they are installed.
-	OpenAPIConfig *openapicommon.Config
 }
 
 // InstallREST registers the REST handlers (storage, watch, proxy and redirect) into a restful Container.
@@ -96,7 +93,7 @@ func (g *APIGroupVersion) InstallREST(container *restful.Container) error {
 	}
 
 	apiResources, ws, registrationErrors := installer.Install()
-	versionDiscoveryHandler := discovery.NewAPIVersionHandler(g.Serializer, g.GroupVersion, staticLister{apiResources})
+	versionDiscoveryHandler := discovery.NewAPIVersionHandler(g.Serializer, g.GroupVersion, staticLister{apiResources}, g.Context)
 	versionDiscoveryHandler.AddToWebService(ws)
 	container.Add(ws)
 	return utilerrors.NewAggregate(registrationErrors)

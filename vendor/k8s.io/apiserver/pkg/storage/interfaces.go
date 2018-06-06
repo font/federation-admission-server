@@ -17,8 +17,7 @@ limitations under the License.
 package storage
 
 import (
-	"context"
-
+	"golang.org/x/net/context"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"

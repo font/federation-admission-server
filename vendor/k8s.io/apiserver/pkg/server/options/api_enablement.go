@@ -97,7 +97,7 @@ func (s *APIEnablementOptions) ApplyTo(c *server.Config, defaultResourceConfig *
 func unknownGroups(groups []string, registry GroupRegisty) []string {
 	unknownGroups := []string{}
 	for _, group := range groups {
-		if !registry.IsGroupRegistered(group) {
+		if !registry.IsRegistered(group) {
 			unknownGroups = append(unknownGroups, group)
 		}
 	}
@@ -107,5 +107,5 @@ func unknownGroups(groups []string, registry GroupRegisty) []string {
 // GroupRegisty provides a method to check whether given group is registered.
 type GroupRegisty interface {
 	// IsRegistered returns true if given group is registered.
-	IsGroupRegistered(group string) bool
+	IsRegistered(group string) bool
 }

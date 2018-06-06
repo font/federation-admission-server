@@ -29,12 +29,12 @@ import (
 
 // GroupVersionRegistry provides access to registered group versions.
 type GroupVersionRegistry interface {
-	// IsGroupRegistered returns true if given group is registered.
-	IsGroupRegistered(group string) bool
-	// IsVersionRegistered returns true if given version is registered.
-	IsVersionRegistered(v schema.GroupVersion) bool
-	// PrioritizedVersionsAllGroups returns all registered group versions.
-	PrioritizedVersionsAllGroups() []schema.GroupVersion
+	// IsRegistered returns true if given group is registered.
+	IsRegistered(group string) bool
+	// IsRegisteredVersion returns true if given version is registered.
+	IsRegisteredVersion(v schema.GroupVersion) bool
+	// RegisteredGroupVersions returns all registered group versions.
+	RegisteredGroupVersions() []schema.GroupVersion
 }
 
 // MergeResourceEncodingConfigs merges the given defaultResourceConfig with specific GroupVersionResource overrides.
@@ -78,9 +78,9 @@ func MergeAPIResourceConfigs(
 	if ok {
 		if allAPIFlagValue == "false" {
 			// Disable all group versions.
-			resourceConfig.DisableAll()
+			resourceConfig.DisableVersions(registry.RegisteredGroupVersions()...)
 		} else if allAPIFlagValue == "true" {
-			resourceConfig.EnableAll()
+			resourceConfig.EnableVersions(registry.RegisteredGroupVersions()...)
 		}
 	}
 
@@ -104,12 +104,12 @@ func MergeAPIResourceConfigs(
 		}
 
 		// Exclude group not registered into the registry.
-		if !registry.IsGroupRegistered(groupVersion.Group) {
+		if !registry.IsRegistered(groupVersion.Group) {
 			continue
 		}
 
 		// Verify that the groupVersion is registered into registry.
-		if !registry.IsVersionRegistered(groupVersion) {
+		if !registry.IsRegisteredVersion(groupVersion) {
 			return nil, fmt.Errorf("group version %s that has not been registered", groupVersion.String())
 		}
 		enabled, err := getRuntimeConfigValue(overrides, key, false)
