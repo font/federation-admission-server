@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: List
+items:
+
+# to delegate authentication and authorization
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: ClusterRoleBinding
+  metadata:
+    name: federation-admission-server:auth-delegator
+  roleRef:
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+    name: system:auth-delegator
+  subjects:
+  - kind: ServiceAccount
+    namespace: federation
+    name: admission-server
+
+# to read the config for terminating authentication
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    namespace: kube-system
+    name: federation-admission-server:extension-server-authentication-reader
+  roleRef:
+    kind: Role
+    apiGroup: rbac.authorization.k8s.io
+    name: extension-apiserver-authentication-reader
+  subjects:
+  - kind: ServiceAccount
+    namespace: federation
+    name: admission-server
